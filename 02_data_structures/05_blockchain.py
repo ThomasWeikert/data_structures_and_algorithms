@@ -1,91 +1,58 @@
 import hashlib
-import datetime
+import time
 
 
 class Block:
-    def __init__(self, data, previous_hash):
-        self.timestamp = datetime.datetime.now()
+
+    def __init__(self, timestamp, data, previous_hash, next=None):
+        self.timestamp = timestamp
         self.data = data
         self.previous_hash = previous_hash
         self.hash = self.calc_hash()
+        self.next = next
 
     def calc_hash(self):
         sha = hashlib.sha256()
-        hash_str = "We are going to encode this string of data!".encode('utf-8')
+        hash_str = str(self.timestamp) + str(self.data) + str(self.previous_hash)
+        hash_str = hash_str.encode('utf-8')
         sha.update(hash_str)
-        sha.update(str(self.timestamp).encode('utf-8'))
-        sha.update(str(self.data).encode('utf-8'))
-        sha.update(str(self.previous_hash).encode('utf-8'))
         return sha.hexdigest()
 
-    def print_block(self):
-        print(f"block timestamp {self.timestamp}")
-        print(f"block data {self.data}")
-        print(f"block prev hash {self.previous_hash}")
-        print(f"block hash {self.hash}")
+class LinkedList:
+    def __init__(self):
+        self.head = None
 
-
-
-class Node:
-
-    def __init__(self, index, block, prev_hash):
-        self.index = index
-        self.block = block
-        self.previous = prev_hash
-
+    def append(self, block):
+        if self.head is None:
+            self.head = block
+        else:
+            current = self.head
+            while current.next:
+                current = current.next
+            current.next = block
 
 class Blockchain:
-
     def __init__(self):
-        self.index = 0
-        self.first_block = Block("first block", None)
-        self.head = Node(self.index, self.first_block, None)
+        self.blockchain = LinkedList()
+        self.blockchain.append(Block("0", "Genesis Block", "0"))
 
     def add_block(self, data):
-        self.index += 1
+        last_block = self.blockchain.head
+        while last_block.next:
+            last_block = last_block.next
+        self.blockchain.append(Block(time.time(), data, last_block.hash))
 
-        node = self.head
-        new_block = Block(data=data, previous_hash=node.block.hash)
-        new_node = Node(self.index, new_block, self.head)
-        self.head = new_node
+# Test cases
+blockchain = Blockchain()
 
-    def print_chain(self):
-        node = self.head
-        while node is not None:
-            print(node.block.print_block())
-            node = node.previous
+# Test Case 1
+blockchain.add_block("Transaction Data 1")
+assert blockchain.blockchain.head.next.data == "Transaction Data 1"
 
-# Add your own test cases: include at least three test cases
-# and two of them must include edge cases, such as null, empty or very large values
+# Test Case 2
+blockchain.add_block("Transaction Data 2")
+assert blockchain.blockchain.head.next.next.data == "Transaction Data 2"
 
-# Test Case 1: happy route
-chain = Blockchain()
-chain.add_block(2)
-chain.add_block("potato")
-print("*******")
-print("Test 1")
-print(f"print chain: {chain.print_chain()}")
-print(f"should be potato: {chain.head.block.data}")
-
-# Test Case 2: add none value doesn't affect block building
-chain2 = Blockchain()
-chain2.add_block(1)
-chain2.add_block(None)
-chain2.add_block(2)
-print("*******")
-print("Test 2")
-print(f"print chain: {chain.print_chain()}")
-print(f"should print None: {chain2.head.previous.block.data}")
-
-# Test Case 3: should add 100 blocks & print last 5
-print("*******")
-print("Test 3")
-print(f"print chain: {chain.print_chain()}")
-chain3 = Blockchain()
-for i in range(100):
-    chain3.add_block(i)
-
-curr = chain3.head
-for _ in range(5):
-    print(f"index {curr.index}")
-    curr = curr.previous
+# Test Case 3 (Edge Case)
+blockchain.add_block("")
+assert blockchain.blockchain.head.next.next.next.data == ""

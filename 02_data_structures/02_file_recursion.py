@@ -1,46 +1,42 @@
 import os
 
+def find_files(suffix, path):
+    if not suffix or not path:
+        return []
 
-def find_files(path):
-    """
-    Find all files beneath path with file name suffix.
-    Note that a path may contain further subdirectories
-    and those subdirectories may also contain further subdirectories.
-    There are no limit to the depth of the subdirectories can be.
-    Args:
-      suffix(str): suffix if the file name to be found
-      path(str): path of the file system
-    Returns:
-       a list of paths
-    """
-    found = list()
+    files = []
 
-    if not os.path.exists(path):
-        return found
+    for item in os.listdir(path):
+        full_path = os.path.join(path, item)
 
-    current = os.listdir(path)
+        if os.path.isfile(full_path) and full_path.endswith(suffix):
+            files.append(full_path)
+        elif os.path.isdir(full_path):
+            files.extend(find_files(suffix, full_path))
 
-    for file in current:
-        filepath = (f"{path}/{file}")
-        if os.path.isfile(filepath):
-            found.append(filepath)
-        if os.path.isdir(filepath):
-            files = find_files(filepath)
-            found.append(files)
+    print(files)
+    return files
 
-    return found
+def test_find_files():
+    # 1. test case
+    suffix = "h"
+    path = "./testdir/subdir5"
+    assert find_files(suffix, path) == ['./testdir/subdir5/a.h']
 
-# Add your own test cases: include at least three test cases
-# and two of them must include edge cases, such as null, empty or very large values
+    # 2. test case
+    suffix = ""
+    path = "./testdir/subdir4"
+    assert find_files(suffix, path) == []
+    
+    # 3. test case
+    suffix = ".gitkeep"
+    path = "./testdir/invalid_dir"
+    try:
+        result = find_files(suffix, path)
+        assert result == []
+    except FileNotFoundError as e:
+        assert str(e) == "[Errno 2] No such file or directory: './testdir/invalid_dir'"
 
-# Test Case 1
-print(find_files("./testdir/subdir1"))
 
-# Test Case 2
-print(find_files("./testdir"))
 
-# Test Case 3
-print(find_files(" "))
-
-# Test Case 4
-print(find_files("./fake/path"))
+test_find_files()
