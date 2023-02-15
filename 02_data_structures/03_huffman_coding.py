@@ -1,5 +1,4 @@
 import sys
-import unittest
 
 def huffman_encoding(data):
     if data is None:

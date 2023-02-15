@@ -1,32 +1,57 @@
-class LRU_Cache(object):
+class Node:
+    def __init__(self, key=None, value=None):
+        self.key = key
+        self.value = value
+        self.prev = None
+        self.next = None
 
+class LRU_Cache:
     def __init__(self, capacity):
         self.capacity = capacity
         self.cache = {}
-        self.order = []
+        self.head = Node()
+        self.tail = Node()
+        self.head.next = self.tail
+        self.tail.prev = self.head
+
+    def add_node(self, node):
+        node.next = self.head.next
+        self.head.next.prev = node
+        self.head.next = node
+        node.prev = self.head
+
+    def remove_node(self, node):
+        node.prev.next = node.next
+        node.next.prev = node.prev
+
+    def move_to_head(self, node):
+        self.remove_node(node)
+        self.add_node(node)
+
+    def remove_tail(self):
+        node = self.tail.prev
+        self.remove_node(node)
+        return node
 
     def get(self, key):
-        if key not in self.cache:
+        node = self.cache.get(key)
+        if not node:
             return -1
-        else:
-            self.order.remove(key)
-            self.order.append(key)
-            return self.cache[key]
+        self.move_to_head(node)
+        return node.value
 
     def set(self, key, value):
-        if key in self.cache:
-            self.cache[key] = value
-            self.order.remove(key)
-            self.order.append(key)
-        elif len(self.cache) >= self.capacity:
-            if self.cache:
-                oldest = self.order.pop(0)
-                self.cache.pop(oldest)
-                self.cache[key] = value
-                self.order.append(key)
+        node = self.cache.get(key)
+        if not node:
+            node = Node(key, value)
+            self.cache[key] = node
+            self.add_node(node)
+            if len(self.cache) > self.capacity:
+                tail = self.remove_tail()
+                del self.cache[tail.key]
         else:
-            self.cache[key] = value
-            self.order.append(key)
+            node.value = value
+            self.move_to_head(node)
 
         
 # Udacity Tests

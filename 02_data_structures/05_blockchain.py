@@ -30,6 +30,8 @@ class LinkedList:
             while current.next:
                 current = current.next
             current.next = block
+            block.next = None  # set the next attribute of the new block to None
+        print("Block added with data:", block.data, "and hash:", block.hash)
 
 class Blockchain:
     def __init__(self):
@@ -37,22 +39,65 @@ class Blockchain:
         self.blockchain.append(Block("0", "Genesis Block", "0"))
 
     def add_block(self, data):
-        last_block = self.blockchain.head
-        while last_block.next:
-            last_block = last_block.next
-        self.blockchain.append(Block(time.time(), data, last_block.hash))
+        if self.blockchain.head is None:
+            self.blockchain.append(Block(time.time(), data, self.blockchain.head.hash))
+        else:
+            last_block = self.blockchain.head
+            while last_block.next:
+                last_block = last_block.next
+            self.blockchain.append(Block(time.time(), data, last_block.hash))
 
-# Test cases
-blockchain = Blockchain()
+    def print_blockchain(self):
+        current = self.blockchain.head
+        result = ""
+        while current:
+            result += f"Timestamp: {current.timestamp}, Data: {current.data}, Hash: {current.hash}\n"
+            current = current.next
+        return result
 
-# Test Case 1
-blockchain.add_block("Transaction Data 1")
-assert blockchain.blockchain.head.next.data == "Transaction Data 1"
+def run_blockchain_tests():
+    # Test Case 1
+    print('************************************************ Test Case 1')
+    blockchain = Blockchain()
+    blockchain.add_block("Transaction 1")
+    blockchain.add_block("Transaction 2")
+    blockchain.add_block("Transaction 3")
+    blockchain.print_blockchain()
+    expected_output = [
+                       f"Timestamp: 0, Data: Genesis Block, Hash: {blockchain.blockchain.head.hash}\n",
+                       f"Timestamp: {blockchain.blockchain.head.next.timestamp}, Data: Transaction 1, Hash: {blockchain.blockchain.head.next.hash}\n",
+                       f"Timestamp: {blockchain.blockchain.head.next.next.timestamp}, Data: Transaction 2, Hash: {blockchain.blockchain.head.next.next.hash}\n",
+                       f"Timestamp: {blockchain.blockchain.head.next.next.next.timestamp}, Data: Transaction 3, Hash: {blockchain.blockchain.head.next.next.next.hash}\n"
+    ]
+    actual_output = blockchain.print_blockchain()
+    for i in range(len(expected_output)):
+        print("Actual output: " + "\n" + str(actual_output.splitlines()[i]))
+        print("Expected output: " + "\n" + str(expected_output[i]))
 
-# Test Case 2
-blockchain.add_block("Transaction Data 2")
-assert blockchain.blockchain.head.next.next.data == "Transaction Data 2"
 
-# Test Case 3 (Edge Case)
-blockchain.add_block("")
-assert blockchain.blockchain.head.next.next.next.data == ""
+    # Test Case 2 (Edge Case)
+    print('************************************************ Test Case 2')
+    blockchain = Blockchain()
+    blockchain.print_blockchain()
+    expected_output = [f"Timestamp: 0, Data: Genesis Block, Hash: {blockchain.blockchain.head.hash}\n"]
+    actual_output = blockchain.print_blockchain()
+    for i in range(len(expected_output)):
+        print("Actual output: " + "\n" + str(actual_output.splitlines()[i]))
+        print("Expected output: " + "\n" + str(expected_output[i]))
+
+
+    # Test Case 3 (Edge Case)
+    print('************************************************ Test Case 3')
+    blockchain = Blockchain()
+    blockchain.add_block("")
+    blockchain.print_blockchain()
+    expected_output = [
+                       f"Timestamp: 0, Data: Genesis Block, Hash: {blockchain.blockchain.head.hash}\n",
+                       f"Timestamp: {blockchain.blockchain.head.next.timestamp}, Data: Transaction 1, Hash: {blockchain.blockchain.head.next.hash}\n",
+    ]
+    actual_output = blockchain.print_blockchain()
+    for i in range(len(expected_output)):
+        print("Actual output: " + "\n" + str(actual_output.splitlines()[i]))
+        print("Expected output: " + "\n" + str(expected_output[i]))
+
+run_blockchain_tests()
