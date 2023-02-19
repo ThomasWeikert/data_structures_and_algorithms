@@ -1,0 +1,3 @@
+This algorithm has a time complexity of O(n) because we traverse the list only once, and perform constant-time comparisons and updates for each element in the list. Therefore, this is an efficient algorithm to find both the minimum and maximum values of an unsorted list of integers.
+
+An alternative would be to implement a sorting algorithm such as merge sort that has a time complexity of O(nlogn). We would sort the list in ascending or descending order and return the first and last index as corresponging min or max value.

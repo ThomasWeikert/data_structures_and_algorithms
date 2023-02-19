@@ -47,7 +47,7 @@ This algorithm works in linear time, because each element is only visited once a
 ```mid = 3```
 ```high = 5```
 
--The next element at index mid is 2, swap it with the element at index high:
+- The next element at index mid is 2, swap it with the element at index high:
 
 ```array before: 012210```
 ```array after:  012201```
