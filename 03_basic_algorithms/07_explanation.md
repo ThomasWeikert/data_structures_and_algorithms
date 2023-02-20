@@ -31,3 +31,9 @@ Overall, the implementation uses a trie data structure to store routes and handl
 
 The RouteTrie has a root node, which corresponds to the root path of the router (i.e., '/'). This root node has a child node corresponding to the path '/home'. The '/home' node has a child node corresponding to the path 'about', which is a leaf node with a handler. This is the only path that has a handler, so if we look up any other path, we should get the 'not found' handler (if one is defined).
 
+**Time and space complexity**
+The time complexity of the RouteTrie class is O(k), where k is the length of the path, for both the insert and find methods since they iterate through each part of the path. The space complexity is also O(kn), where n is the number of nodes in the trie, since in the worst case every node in the trie has exactly one child, and there are k levels.
+
+The time complexity of the Router class is the same as the RouteTrie class since it just wraps it, so it's also O(k) for both the add_handler and lookup methods. The space complexity of the Router class is O(n), where n is the number of nodes in the trie.
+
+

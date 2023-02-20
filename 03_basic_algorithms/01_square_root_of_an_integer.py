@@ -7,17 +7,19 @@ def sqrt(number):
     Returns:
        int: Floored Square Root
     """
+    if number < 0:
+        raise ValueError("sqrt() argument must be non-negative")
+    if number == 0:
+        return 0
+    if number == 1:
+        return 1
 
-    square_root = 0
-    if number <= 0:
-      return 0
+    guess = number // 2
+    while guess * guess > number:
+        guess = (guess + number // guess) // 2
 
-    for i in range(1,number+1):
-       print(i)
-       if (i*i) == number:
-         return i
-       if (i*i) > number:
-         return i-1       
+    return guess
+
 
 print ("Pass" if  (3 == sqrt(9)) else "Fail")
 print ("Pass" if  (0 == sqrt(0)) else "Fail")

@@ -53,4 +53,9 @@ When reverse is set to True, the sorting is done in descending order. For exampl
 In the rearrange_digits function, we set reverse=True to sort the input list in descending order so that we can divide it into two parts with the highest digits at the beginning of each part. This ensures that we get the maximum possible sum when we concatenate the digits of each part to form the two numbers.
 
 
+**Time and space complexity:**
+The time complexity of the rotated_array_search function is O(log n), since it uses binary search to find the pivot and then performs binary search on one of the halves. The time complexity of the linear_search function is O(n), since it iterates over the entire input list.
+
+The space complexity of both functions is O(1), since they only use a constant amount of additional memory regardless of the size of the input list.
+
 

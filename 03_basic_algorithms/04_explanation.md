@@ -65,3 +65,9 @@ makefile
 ```high = 3```
 
 The traversal is complete, and the array is sorted according to the Dutch National Flag problem.
+
+
+**Time and space complexity**
+The time complexity of the sort_012 function is O(n), where n is the length of the input array. This is because the function traverses the array once, swapping elements in place as necessary, without any nested loops.
+
+The space complexity of the function is O(1), which means that the amount of extra memory used by the function does not increase as the size of the input array grows. This is because the function only uses a fixed number of variables to keep track of the positions of the low, mid, and high pointers.

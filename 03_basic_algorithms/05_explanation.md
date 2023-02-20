@@ -38,3 +38,9 @@ The next level represents the third letter of the words. The "a" node has one ch
 To check if a word is in the Trie, we start at the root and follow the edges corresponding to each letter of the word. If we reach a leaf node, the word is in the Trie. If we reach a node with no corresponding edge for the next letter, the word is not in the Trie.
 
 The Trie data structure is useful for quickly finding all words with a given prefix. To do this, we start at the root and follow the edges corresponding to each letter of the prefix. We then recursively collect all the complete words from the subtree rooted at the prefix node. For example, to find all words with the prefix "ca", we would start at the "c" node, follow the edge to the "a" node, and recursively collect all complete words from the subtree rooted at the "a" node, which would be "cat" and "car".
+
+
+**Time and space complexity**
+The time complexity for inserting a word into the trie is O(k), where k is the length of the word being inserted. For finding the node that represents a prefix, the time complexity is also O(k), where k is the length of the prefix. Finally, the time complexity for the suffixes method is O(n), where n is the total number of nodes in the trie. This is because the method needs to visit every node in the trie once to collect the suffixes.
+
+The space complexity of the algorithm is O(n*m), where n is the number of words in the trie and m is the length of the longest word. This is because the trie needs to store each character in each word, and each node in the trie represents a single character. The space complexity could potentially be reduced by sharing nodes between words that have common prefixes.
